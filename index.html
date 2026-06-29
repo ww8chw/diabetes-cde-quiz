@@ -75,18 +75,57 @@
   .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--panel2);
     border:1px solid var(--line);padding:10px 18px;border-radius:10px;opacity:0;transition:.3s;pointer-events:none;z-index:99}
   .toast.show{opacity:1}
+  /* ---- 字級縮放 ---- */
+  body{--fs:1}
+  .qstem{font-size:calc(16px*var(--fs))}
+  .opt{font-size:calc(15px*var(--fs))}
+  .explain{font-size:calc(14px*var(--fs))}
+  .note p,.note li,.note td,.note th{font-size:calc(13.5px*var(--fs))}
+  .acc>summary{font-size:calc(15px*var(--fs))}
+  /* ---- header 工具列 ---- */
+  .toolbar{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .toolbar button{background:var(--chip);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:4px 11px;cursor:pointer;font-size:13px;transition:.15s}
+  .toolbar button:hover{color:var(--txt);border-color:var(--accent)}
+  .toolbar .sep{width:1px;height:18px;background:var(--line);margin:0 4px}
+  /* ---- 淺色主題 ---- */
+  body.light{--bg:#f4f7fc;--panel:#ffffff;--panel2:#eef3fb;--line:#d2dcec;--txt:#16233a;--muted:#566884;--accent:#2f7ae0;--accent2:#0c9170;--green:#1f9d57;--red:#d8455a;--amber:#a9710f;--chip:#e6edf7}
+  body.light{background:linear-gradient(160deg,#f4f7fc,#e9eff8)}
+  body.light header{background:rgba(255,255,255,.78)}
+  body.light .tab.active{color:#fff}
+  body.light .btn{color:#fff}
+  body.light .opt.correct{background:rgba(31,157,87,.13)}
+  body.light .opt.wrong{background:rgba(216,69,90,.12)}
+  /* ---- 題庫瀏覽 ---- */
+  .qitem{border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden;background:var(--panel2)}
+  .qitem>summary{cursor:pointer;padding:10px 12px;list-style:none;font-size:calc(14px*var(--fs))}
+  .qitem>summary::-webkit-details-marker{display:none}
+  .qitem>summary::before{content:"＋ ";color:var(--accent);font-weight:700}
+  .qitem[open]>summary::before{content:"－ "}
+  .qitem .body{padding:2px 12px 12px}
+  .qitem .opt{cursor:default}
+  .qitem .opt:hover{border-color:var(--line)}
 </style>
 </head>
 <body>
 <header>
   <h1>糖尿病共照網 — 教材重點 &amp; 考古題練習</h1>
   <p>專業課程認證考試準備 · 共 <span id="qcount">0</span> 題 · 答案以藥理／臨床知識判定，⚠ 標記者建議再查證</p>
+  <div class="toolbar">
+    <button id="themeBtn" title="切換深色/淺色">🌙 深色</button>
+    <span class="sep"></span>
+    <span class="muted" style="font-size:12px">字級</span>
+    <button data-fs="0.9">A−</button>
+    <button data-fs="1">A</button>
+    <button data-fs="1.15">A＋</button>
+    <button data-fs="1.3">A＋＋</button>
+  </div>
 </header>
 
 <div class="wrap">
   <div class="tabs">
     <div class="tab active" data-tab="notes">📖 教材重點</div>
     <div class="tab" data-tab="quiz">📝 練習測驗</div>
+    <div class="tab" data-tab="browse">🗂 題庫瀏覽</div>
     <div class="tab" data-tab="wrong">🔁 錯題複習</div>
   </div>
 
@@ -444,6 +483,14 @@
       <div id="wrongList" style="margin-top:12px"></div>
     </div>
   </section>
+
+  <!-- ===================== BROWSE ===================== -->
+  <section id="tab-browse" class="hide">
+    <div class="card">
+      <p class="muted">依主題分組的完整題庫，點主題展開、再點題目看正解與詳解；可一鍵「只練此類」。</p>
+      <div id="browseList"></div>
+    </div>
+  </section>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -669,13 +716,14 @@ function byId(id){return QUESTIONS.find(q=>q.id===id)}
 
 /* ===================== Tab 切換 ===================== */
 const tabs=document.querySelectorAll('.tab');
-const sections={notes:document.getElementById('tab-notes'),quiz:document.getElementById('tab-quiz'),wrong:document.getElementById('tab-wrong')};
-tabs.forEach(t=>t.onclick=()=>{
-  tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');
-  Object.values(sections).forEach(s=>s.classList.add('hide'));
-  sections[t.dataset.tab].classList.remove('hide');
-  if(t.dataset.tab==='wrong')renderWrong();
-});
+const sections={notes:document.getElementById('tab-notes'),quiz:document.getElementById('tab-quiz'),browse:document.getElementById('tab-browse'),wrong:document.getElementById('tab-wrong')};
+function activateTab(name){
+  tabs.forEach(x=>x.classList.toggle('active',x.dataset.tab===name));
+  Object.entries(sections).forEach(([k,s])=>s.classList.toggle('hide',k!==name));
+  if(name==='wrong')renderWrong();
+  if(name==='browse')renderBrowse();
+}
+tabs.forEach(t=>t.onclick=()=>activateTab(t.dataset.tab));
 
 /* ===================== 初始化 ===================== */
 document.getElementById('qcount').textContent=QUESTIONS.length;
@@ -696,6 +744,47 @@ function poolFromSetup(){
   return pool;
 }
 function updateSetupInfo(){document.getElementById('setupInfo').textContent='本回合 '+poolFromSetup().length+' 題';}
+
+/* ===================== 題庫瀏覽 ===================== */
+function renderBrowse(){
+  const host=document.getElementById('browseList');
+  const topics=[...new Set(QUESTIONS.map(q=>q.topic))];
+  host.innerHTML=topics.map(t=>{
+    const list=QUESTIONS.filter(q=>q.topic===t);
+    const tEsc=t.replace(/'/g,"\\'");
+    const items=list.map(q=>`
+      <details class="qitem"><summary>#${q.id}　${q.q}${q.warn?' <span class="pill warn">⚠</span>':''}</summary>
+        <div class="body">
+          ${Object.keys(q.options).map(k=>`<div class="opt ${k===q.answer?'correct':''}"><span class="k">${k}</span>${q.options[k]}</div>`).join('')}
+          <div class="explain show" style="margin-top:8px"><b style="color:var(--green)">✓ 正解 ${q.answer}</b>　${q.explain}</div>
+        </div>
+      </details>`).join('');
+    return `<details class="acc"><summary>${t}（${list.length} 題）</summary>
+      <div class="body">
+        <button class="btn sm" style="margin:4px 0 10px" onclick="practiceTopic('${tEsc}')">📝 只練此類 (${list.length})</button>
+        ${items}
+      </div></details>`;
+  }).join('');
+}
+function practiceTopic(t){
+  const pool=QUESTIONS.filter(q=>q.topic===t);
+  if(!pool.length){toast('此類無題目');return;}
+  activateTab('quiz');
+  const sel=document.getElementById('topicSel');sel.value=t;updateSetupInfo();
+  startQuiz(pool);
+}
+
+/* ===================== 主題 / 字級偏好 ===================== */
+(function initPrefs(){
+  const KT='dm_theme',KF='dm_fs',btn=document.getElementById('themeBtn');
+  function applyTheme(v){document.body.classList.toggle('light',v==='light');btn.textContent=v==='light'?'☀ 淺色':'🌙 深色';}
+  function applyFs(v){document.body.style.setProperty('--fs',v);
+    document.querySelectorAll('.toolbar [data-fs]').forEach(b=>b.style.fontWeight=b.dataset.fs===v?'800':'400');}
+  let theme=localStorage.getItem(KT)||'dark';applyTheme(theme);
+  let fs=localStorage.getItem(KF)||'1';applyFs(fs);
+  btn.onclick=()=>{theme=theme==='light'?'dark':'light';applyTheme(theme);localStorage.setItem(KT,theme);};
+  document.querySelectorAll('.toolbar [data-fs]').forEach(b=>b.onclick=()=>{applyFs(b.dataset.fs);localStorage.setItem(KF,b.dataset.fs);});
+})();
 
 /* ===================== 測驗流程 ===================== */
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
