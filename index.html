@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>糖尿病共照網 — 教材重點 & 考古題練習</title>
+<style>
+  :root{
+    --bg:#0f1729; --panel:#1a2540; --panel2:#222f52; --line:#324168;
+    --txt:#e8edf7; --muted:#9fb0d0; --accent:#4f9dff; --accent2:#6ee7c7;
+    --green:#39d98a; --red:#ff6b7a; --amber:#ffc24b; --chip:#2b3a63;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    background:linear-gradient(160deg,#0f1729,#131e36);color:var(--txt);line-height:1.7;-webkit-font-smoothing:antialiased}
+  header{padding:22px 18px 14px;text-align:center;border-bottom:1px solid var(--line);
+    background:rgba(20,30,55,.6);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
+  header h1{margin:0;font-size:20px;letter-spacing:.5px}
+  header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  .wrap{max-width:860px;margin:0 auto;padding:18px 16px 80px}
+  .tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+  .tab{padding:9px 16px;border-radius:999px;background:var(--chip);color:var(--muted);
+    border:1px solid transparent;cursor:pointer;font-size:14px;transition:.15s;user-select:none}
+  .tab.active{background:var(--accent);color:#06122a;font-weight:700;border-color:var(--accent)}
+  .tab:hover{color:var(--txt)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;
+    box-shadow:0 6px 22px rgba(0,0,0,.25)}
+  .muted{color:var(--muted)}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  select,button{font-family:inherit;font-size:14px}
+  select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+  .btn{background:var(--accent);color:#06122a;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;transition:.15s}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
+  .btn.sm{padding:7px 12px;font-size:13px}
+  .pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;background:var(--chip);color:var(--muted);margin-right:6px}
+  .pill.topic{background:#1f3b5c;color:#9fd0ff}
+  .pill.warn{background:#4a3a16;color:var(--amber)}
+  /* quiz */
+  .qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:var(--muted)}
+  .qstem{font-size:16px;font-weight:600;margin:6px 0 14px}
+  .opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1.5px solid var(--line);
+    border-radius:12px;padding:12px 14px;margin:8px 0;color:var(--txt);cursor:pointer;transition:.12s;font-size:15px}
+  .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opt .k{display:inline-block;width:24px;font-weight:800;color:var(--accent)}
+  .opt.correct{border-color:var(--green);background:rgba(57,217,138,.14)}
+  .opt.correct .k{color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:rgba(255,107,122,.14)}
+  .opt.wrong .k{color:var(--red)}
+  .opt:disabled{cursor:default}
+  .explain{margin-top:12px;padding:12px 14px;border-radius:12px;background:#13243f;border:1px solid var(--line);font-size:14px;display:none}
+  .explain.show{display:block}
+  .explain b{color:var(--accent2)}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+  .progress{height:6px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:10px 0 4px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:.3s}
+  .stat{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
+  .stat b{font-size:20px;display:block}
+  /* notes */
+  .note h3{margin:18px 0 6px;color:var(--accent2);font-size:17px;border-left:3px solid var(--accent);padding-left:10px}
+  .note table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13.5px}
+  .note th,.note td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  .note th{background:var(--panel2);color:var(--accent2)}
+  .note ul{margin:6px 0;padding-left:20px}
+  .note li{margin:3px 0}
+  .acc{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+  .acc>summary{cursor:pointer;padding:14px 16px;font-weight:700;background:var(--panel2);list-style:none;font-size:15px}
+  .acc>summary::-webkit-details-marker{display:none}
+  .acc>summary::before{content:"▸ ";color:var(--accent)}
+  .acc[open]>summary::before{content:"▾ "}
+  .acc .body{padding:4px 16px 14px}
+  .hide{display:none}
+  .empty{text-align:center;color:var(--muted);padding:30px}
+  kbd{background:#0a1426;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px}
+  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--panel2);
+    border:1px solid var(--line);padding:10px 18px;border-radius:10px;opacity:0;transition:.3s;pointer-events:none;z-index:99}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <h1>糖尿病共照網 — 教材重點 &amp; 考古題練習</h1>
+  <p>專業課程認證考試準備 · 共 <span id="qcount">0</span> 題 · 答案以藥理／臨床知識判定，⚠ 標記者建議再查證</p>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" data-tab="notes">📖 教材重點</div>
+    <div class="tab" data-tab="quiz">📝 練習測驗</div>
+    <div class="tab" data-tab="wrong">🔁 錯題複習</div>
+  </div>
+
+  <!-- ===================== NOTES ===================== -->
+  <section id="tab-notes">
+    <div class="card note">
+      <p class="muted">①–⑥ 為考古題核心主題，⑦–⑰ 為依考試簡章參考書目補充之完整考點。搭配上方「練習測驗」邊讀邊刷題效果最好。</p>
+
+      <details class="acc" open><summary>① 口服降血糖藥 — 機轉 / 低血糖 / 體重</summary><div class="body">
+        <table>
+          <tr><th>藥物類別</th><th>代表藥</th><th>主要機轉</th><th>單用低血糖</th><th>體重</th></tr>
+          <tr><td>雙胍類 Biguanide</td><td>Metformin</td><td>抑制肝臟糖質新生（第一線）</td><td>否</td><td>中性／略降</td></tr>
+          <tr><td>磺醯尿素 SU</td><td>glimepiride, gliclazide, glipizide</td><td>促胰島素分泌</td><td><b>是</b></td><td>增加</td></tr>
+          <tr><td>美格列奈 Meglitinide</td><td>repaglinide, nateglinide</td><td>促胰島素分泌（餐後）</td><td><b>是</b></td><td>增加</td></tr>
+          <tr><td>TZD 胰島素增敏劑</td><td>pioglitazone</td><td>PPARγ 增加胰島素敏感性</td><td>否</td><td>增加＋水腫</td></tr>
+          <tr><td>α-葡萄糖苷酶抑制劑</td><td>acarbose</td><td>延緩雙醣→單醣吸收，降餐後</td><td>否</td><td>中性</td></tr>
+          <tr><td>DPP-4 抑制劑</td><td>sitagliptin</td><td>提高腸泌素濃度（口服）</td><td>否</td><td>中性</td></tr>
+          <tr><td>GLP-1 RA</td><td>liraglutide…（針劑）</td><td>腸泌素促效，抑食慾、緩胃排空</td><td>否</td><td><b>減少</b></td></tr>
+          <tr><td>SGLT2 抑制劑</td><td>—</td><td>腎臟排糖</td><td>否</td><td>減少</td></tr>
+        </table>
+        <ul>
+          <li><b>會低血糖：</b>只有「促胰島素分泌劑」＝ SU + Meglitinide（與胰島素）。</li>
+          <li><b>會增重：</b>SU、Meglitinide、TZD、胰島素。<b>不增重／減重：</b>Metformin、acarbose、DPP-4、GLP-1、SGLT2、orlistat。</li>
+          <li>SU 與 Meglitinide 機轉相同 → <b>不宜併用</b>。</li>
+          <li>Metformin：抑制肝糖新生、改善血脂、影響 <b>維生素 B12</b>（非 B1）；肝腎不全／老年慎用以防乳酸中毒。UKPDS 證實對心血管有益。</li>
+          <li>Acarbose 造成的低血糖 → 須補<b>單醣（葡萄糖／蜂蜜）</b>，吃飯、牛奶無效。</li>
+          <li>TZD（pioglitazone）：水腫、體重增加、血容比下降、心衰惡化、骨折風險。</li>
+          <li>心血管實證：GLP-1 RA、SGLT2i 有保護；<b>DPP-4i 為中性</b>。</li>
+          <li>腸泌素 incretin＝GLP-1（遠端 L 細胞）＋GIP（近端 K 細胞），進食後上升、半衰期極短被 DPP-4 分解。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>② 胰島素 — 種類與藥動學</summary><div class="body">
+        <table>
+          <tr><th>類型</th><th>代表</th><th>外觀</th><th>高峰</th><th>用途</th></tr>
+          <tr><td>速效</td><td>aspart, lispro</td><td>澄清</td><td>有</td><td>餐時，控餐後（依飯後2hr調量），可餐前/後即打</td></tr>
+          <tr><td>短效</td><td>Regular (RI)</td><td>澄清</td><td>有</td><td>餐前30–60分注射</td></tr>
+          <tr><td>中效</td><td>NPH</td><td>混濁</td><td>有(2–4hr起效)</td><td>基礎</td></tr>
+          <tr><td>長效</td><td>glargine, detemir</td><td>澄清</td><td><b>無</b></td><td>基礎，每天固定時間</td></tr>
+          <tr><td>超長效</td><td>degludec (Tresiba)</td><td>澄清</td><td>無(t½≈25hr)</td><td>基礎，多六聚體緩釋</td></tr>
+        </table>
+        <ul>
+          <li><b>基礎胰島素：</b>NPH、glargine、detemir、degludec。<b>不可當基礎：</b>Regular、aspart、lispro（餐時）。</li>
+          <li>Glargine：澄清、無高峰、≈24hr、每天固定同一時間、PH≈4 不可靜脈注射、不可與他種混合。</li>
+          <li>胰島素幫浦（CSII）只用<b>速效</b>胰島素；離身過久即可能高血糖／DKA（離身4hr不影響為錯）。</li>
+          <li>速效 vs RI：RI 需餐前30–60分、易餐前低血糖；速效可即時注射、夜間低血糖較少、降 A1C 略佳。</li>
+          <li>降 A1C 能力最強＝<b>胰島素</b>（無劑量上限）；acarbose 最弱。</li>
+          <li><b>劑量計算：</b>胰島素需求量 = 醣量 ÷（每單位可涵蓋醣克數）。ICR 法則：500÷TDD（速效）或 450÷TDD。</li>
+          <li>懷孕中後期胰島素阻抗↑，需求約增至孕前2倍（≈0.9–1.2 甚至1.8–2.0 u/kg/天）。</li>
+          <li>積極治療＝每日多次注射或幫浦（DCCT 證實併發症較少）。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>③ 胰島素注射技術</summary><div class="body">
+        <ul>
+          <li><b>吸收速率：</b>腹部最快 ＞ 上臂 ＞ 大腿 ＞ <b>臀部最慢</b>。</li>
+          <li>注射部位需<b>輪替</b>、避開脂肪增生(lipohypertrophy)／發炎／水腫，注射前洗手、部位乾淨乾燥。</li>
+          <li><b>筆針一針一換</b>、單次使用；重複使用會鈍化、增加疼痛與脂肪增生。</li>
+          <li>減痛：胰島素回溫至室溫、排除空針氣泡、酒精乾後再扎。</li>
+          <li>RI＋NPH 預混抽好之注射器冷藏穩定 <b>≤ 1 週</b>。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>④ 糖尿病神經病變</summary><div class="body">
+        <ul>
+          <li>最常見＝<b>遠端對稱性多發性神經病變</b>（足部麻木、感覺遲鈍；大纖維影響觸覺/振動覺）。</li>
+          <li>影響感覺、運動、自主神經三者皆可。</li>
+          <li><b>篩檢時機：</b>第2型確診當下即篩；第1型診斷後約5年起，之後至少每年一次。</li>
+          <li>單一神經病變(mononeuropathy)多為急性、<b>自限性</b>會自行緩解。</li>
+          <li>近端運動型（糖尿病肌萎縮）主要侵犯運動神經 → 近端肌無力。</li>
+          <li>自主神經：姿勢性低血壓、運動耐受不良、胃輕癱（上消化道）、便秘/腹瀉/失禁（下消化道）、無感低血糖、性功能/膀胱障礙。</li>
+          <li>高血糖經 AGE <b>破壞</b>髓鞘加重病變（非保護）；嚴格血糖控制可降約60%發生率(DCCT)。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑤ 糖尿病足 — PEDIS / Wagner / 篩檢</summary><div class="body">
+        <ul>
+          <li><b>PEDIS：</b>Perfusion 灌流 / Extent 範圍 / Depth 深度 / Infection 感染 / Sensation 感覺。</li>
+          <li><b>Wagner 分級：</b>0～5 級，共 <b>6 級</b>。</li>
+          <li>足潰瘍最主要危險因子＝<b>周邊神經病變</b>（保護性感覺喪失）。</li>
+          <li>篩檢工具：<b>10g(5.07) 單股尼龍纖維</b>→觸壓覺；<b>128 cps 音叉 / Rydel-Seiffer</b>→振動覺；觸診足背動脈→血管。</li>
+          <li>周邊血管病變可因合併神經病變而<b>無痛</b>，不能因不痛而排除。</li>
+          <li>壞疽：濕性＝感染＋持續壞死；乾性未必須截肢。</li>
+          <li>抗血小板：clopidogrel、cilostazol、ticagrelor；<b>Rivaroxaban 是抗凝血(Xa)非抗血小板</b>。</li>
+          <li>清創後不建議立即直接縫合；乾淨傷口避免用優碘（細胞毒性）；可用負壓引流、保持生長因子環境。</li>
+          <li>鎚狀/爪狀趾 → 穿<b>深、寬鞋頭</b>的鞋保護腳趾、留活動空間。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑥ 傷口營養</summary><div class="body">
+        <ul>
+          <li>促癒合營養素：維生素 A、C、鐵、Omega-3、鋅(≈30mg/天×12週)、充足水分、蛋白質/胺基酸。</li>
+          <li><b>精胺酸(Arginine)</b>＝一氧化氮前驅物 → 擴張血管、增加灌流、促進癒合。</li>
+          <li>維生素 A：抗發炎、調節免疫、促上皮修復。</li>
+          <li>熱量建議（壓瘡）≈ 30–35 大卡/公斤/天；先滿足總熱量再補蛋白質。</li>
+        </ul>
+      </div></details>
+
+      <p class="muted" style="font-size:13px;margin:18px 0 6px;border-top:1px dashed var(--line);padding-top:14px">
+        <b style="color:var(--accent2)">▼ 以下為依考試簡章參考書目</b>（國健署《糖尿病防治手冊》、高榮《糖尿病照護指引精要》等）<b style="color:var(--accent2)">補充之全面考點</b>，涵蓋診斷分類、營養運動、監測、急慢性併發症、特殊族群與衛教。
+      </p>
+
+      <details class="acc"><summary>⑦ 糖尿病分類與診斷標準</summary><div class="body">
+        <h3>分類</h3>
+        <table>
+          <tr><th>類型</th><th>機轉／特徵</th><th>重點</th></tr>
+          <tr><td>第 1 型</td><td>胰島 β 細胞被自體免疫破壞，<b>絕對缺乏胰島素</b></td><td>自體抗體 ICA、IAA、<b>GAD</b>、IA-2；與 HLA-DR3/DR4 相關；好發兒童青少年；易酮酸中毒；須終生胰島素</td></tr>
+          <tr><td>第 2 型</td><td><b>胰島素阻抗</b>＋相對分泌不足</td><td>占 90%↑；與肥胖、家族史、年齡有關；多無酮體；起初可口服藥</td></tr>
+          <tr><td>妊娠糖尿病 GDM</td><td>懷孕中後期首次發現的高血糖</td><td>產後須重新分類；日後得 T2DM 風險高</td></tr>
+          <tr><td>其他特異型</td><td>MODY（單基因）、胰臟疾病、藥物（類固醇）、內分泌疾病</td><td>—</td></tr>
+        </table>
+        <h3>診斷標準（符合任一項，無症狀者須改日複驗）</h3>
+        <ul>
+          <li><b>HbA1c ≥ 6.5%</b></li>
+          <li><b>空腹血漿血糖 FPG ≥ 126 mg/dL</b>（禁食至少 8 小時）</li>
+          <li><b>OGTT 第 2 小時血糖 ≥ 200 mg/dL</b>（75 克葡萄糖）</li>
+          <li>典型高血糖症狀（多吃多喝多尿、體重減輕）＋<b>隨機血糖 ≥ 200 mg/dL</b></li>
+        </ul>
+        <h3>糖尿病前期（高危險群）</h3>
+        <ul>
+          <li><b>空腹血糖偏高 IFG：FPG 100–125 mg/dL</b>（部分舊版 110–125）。</li>
+          <li><b>葡萄糖耐受不良 IGT：OGTT 2 小時 140–199 mg/dL</b>。</li>
+          <li>HbA1c 5.7–6.4%。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑧ 血糖控制目標 / 新陳代謝症候群 / 流行病學</summary><div class="body">
+        <h3>一般成人控制目標</h3>
+        <table>
+          <tr><th>指標</th><th>目標</th></tr>
+          <tr><td>HbA1c</td><td><b>&lt; 7%</b>（年輕、病程短、無併發症可 &lt;6.5%；老衰、易低血糖則放寬）</td></tr>
+          <tr><td>空腹／餐前血糖</td><td>80–130 mg/dL</td></tr>
+          <tr><td>餐後血糖（飯後 2 小時）</td><td>&lt; 180 mg/dL</td></tr>
+          <tr><td>血壓</td><td>&lt; 130/80 mmHg</td></tr>
+          <tr><td>血脂 LDL</td><td>&lt; 100 mg/dL（已有心血管病 &lt;70）</td></tr>
+        </table>
+        <p class="muted">HbA1c 反映過去 <b>2–3 個月</b>平均血糖。UKPDS：HbA1c 每降 1%，微血管併發症約↓35%。</p>
+        <h3>新陳代謝症候群（台灣標準，≥ 3 項即成立）</h3>
+        <ul>
+          <li><b>腹部肥胖：腰圍 男 ≥ 90cm／女 ≥ 80cm</b></li>
+          <li><b>三酸甘油酯 TG ≥ 150 mg/dL</b></li>
+          <li><b>高密度脂蛋白 HDL：男 &lt; 40／女 &lt; 50 mg/dL</b></li>
+          <li><b>血壓 ≥ 130/85 mmHg</b></li>
+          <li><b>空腹血糖 ≥ 100 mg/dL</b></li>
+        </ul>
+        <h3>流行病學</h3>
+        <ul>
+          <li>糖尿病為國人十大死因之一；<b>心血管疾病是糖尿病患首要死因</b>。</li>
+          <li>約有相當比例患者未被診斷（無症狀期長）。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑨ 醫療營養治療 MNT（飲食）</summary><div class="body">
+        <h3>三大營養素分配</h3>
+        <table>
+          <tr><th>營養素</th><th>建議</th></tr>
+          <tr><td>醣類＋單元不飽和脂肪</td><td>合計約 60–70% 總熱量</td></tr>
+          <tr><td>蛋白質</td><td>15–20%（已有腎病變者減量）</td></tr>
+          <tr><td>飽和脂肪</td><td><b>&lt; 10%</b>（有心血管風險 &lt;7%）</td></tr>
+          <tr><td>膽固醇</td><td>&lt; 200 mg／天</td></tr>
+          <tr><td>鈉</td><td>&lt; 2400 mg／天</td></tr>
+          <tr><td>纖維</td><td>每日 20–35 克（高纖有助控糖、降脂）</td></tr>
+        </table>
+        <ul>
+          <li><b>升糖指數 GI</b>：以含 50 克醣類食物比較血糖上升幅度；高 GI 食物使血糖快速上升。</li>
+          <li><b>酒精：男性 ≤ 2 當量、女性 ≤ 1 當量／天</b>，且須隨餐（空腹飲酒易低血糖）。</li>
+          <li>減重：每日減少 <b>500–1000 大卡</b>，每週減 0.5–1 公斤；極低熱量飲食 VLCD ≤ 800 大卡須醫療監督。</li>
+          <li>醣類計算（carbohydrate counting）用於彈性胰島素治療配對醣量。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑩ 運動治療（FITT）</summary><div class="body">
+        <ul>
+          <li><b>頻率 F</b>：每週 ≥ 3–5 次，勿連續 2 天以上不運動。</li>
+          <li><b>強度 I</b>：中等強度（運動時心跳較安靜增加約 20–30 次／分，能講話不能唱歌）。</li>
+          <li><b>時間 T</b>：每次 20–60 分鐘；每週 ≥ 150 分鐘中等強度有氧。</li>
+          <li><b>型態 T</b>：有氧為主，搭配阻力訓練。</li>
+          <li><b>禁忌：血糖 &gt; 250–300 mg/dL 併酮體陽性時不宜運動</b>（恐加重高血糖／酮酸）。</li>
+          <li>運動可能造成<b>運動後（延遲性）低血糖，達 12–24 小時</b>；使用胰島素／促泌劑者運動前後須監測、備糖。</li>
+          <li>有周邊神經病變者避免承重型運動以防足部潰瘍，宜選游泳、騎車。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑪ 戒菸與行為改變</summary><div class="body">
+        <ul>
+          <li>吸菸增加心血管與微血管併發症風險；菸量越大風險越高。</li>
+          <li><b>跨理論模式行為改變五階段</b>：思考前期 → 思考期 → 準備期 → 行動期 → <b>維持期</b>。</li>
+          <li><b>賦能（Empowerment）</b>：以病人為中心，協助其自我決策與自我管理，而非單向命令。</li>
+          <li>衛教技巧：示範教學、回覆示教（teach-back）、設定可達成的小目標。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑫ 血糖監測 SMBG / 糖化血色素</summary><div class="body">
+        <ul>
+          <li><b>SMBG</b> 自我血糖監測：即時反映當下血糖，利於調整飲食、運動、藥物。</li>
+          <li><b>HbA1c</b>：反映 2–3 個月平均血糖；建議每 3 個月追蹤一次（穩定者可半年）。受溶血、貧血、血紅素變異影響。</li>
+          <li>糖化白蛋白／果糖胺：反映 2–3 週短期血糖。</li>
+          <li>連續血糖監測 CGM：評估血糖變異與目標範圍時間 TIR。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑬ 急性併發症：低血糖 / DKA / HHS</summary><div class="body">
+        <h3>低血糖</h3>
+        <ul>
+          <li>定義：<b>血糖 &lt; 70（臨床常用 &lt; 60）mg/dL</b>。症狀：冒冷汗、發抖、心悸、飢餓、意識改變。</li>
+          <li><b>15 法則</b>：清醒者口服 15 克單醣（葡萄糖、果汁、方糖），15 分鐘後復測，未改善再給一次。</li>
+          <li>意識不清／無法吞嚥：<b>升糖素 glucagon 1 mg 肌肉注射</b>或靜脈葡萄糖，勿強行餵食。</li>
+          <li>Whipple's triad：低血糖症狀＋當下血糖低＋給糖後緩解。</li>
+        </ul>
+        <h3>糖尿病酮酸中毒 DKA vs 高血糖高滲透壓 HHS</h3>
+        <table>
+          <tr><th></th><th>DKA</th><th>HHS</th></tr>
+          <tr><td>常見對象</td><td>年輕、<b>第 1 型</b></td><td>年長、<b>第 2 型</b></td></tr>
+          <tr><td>血糖</td><td>&gt; 250 mg/dL</td><td><b>&gt; 600 mg/dL</b></td></tr>
+          <tr><td>酮體</td><td><b>明顯陽性</b></td><td>無／微量</td></tr>
+          <tr><td>酸血症</td><td>pH &lt; 7.3、HCO₃⁻ 低</td><td>無明顯酸中毒</td></tr>
+          <tr><td>滲透壓</td><td>正常／略高</td><td><b>&gt; 320 mOsm/kg</b></td></tr>
+          <tr><td>特徵</td><td>Kussmaul 深呼吸、呼氣<b>水果味</b>、腹痛</td><td>嚴重脫水、意識障礙</td></tr>
+        </table>
+        <ul>
+          <li>誘因：感染、自行停打胰島素、急性壓力。</li>
+          <li>處置：補<b>輸液</b>、靜脈<b>胰島素</b>、矯正<b>電解質（尤其鉀）</b>；治療中血鉀會下降須監測。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑭ 慢性併發症：眼 / 腎 / 神經 / 大血管</summary><div class="body">
+        <h3>視網膜病變</h3>
+        <ul>
+          <li>非增殖性 NPDR：微血管瘤、出血、硬性滲出物；增殖性 <b>PDR：新生血管</b>（可致玻璃體出血、視網膜剝離）。</li>
+          <li>第 2 型確診時即須眼底檢查，之後<b>每年</b>追蹤；血糖、血壓控制可延緩。</li>
+        </ul>
+        <h3>腎病變</h3>
+        <ul>
+          <li>早期指標：<b>微量白蛋白尿（UACR 30–300 mg/g 或 30–300 mg/天）</b>。</li>
+          <li>首選藥物：<b>ACEI／ARB</b>（兼具腎臟保護）；嚴格控制血壓 &lt; 130/80。</li>
+          <li>SGLT2 抑制劑具腎臟保護效果。</li>
+        </ul>
+        <h3>神經病變</h3>
+        <ul>
+          <li>最常見為<b>遠端對稱性多發性神經病變</b>（手套襪套式麻木、刺痛、感覺喪失）。</li>
+          <li>篩檢：<b>10 克 Semmes-Weinstein 單股纖維（5.07）</b>、音叉震動覺、MNSI 量表。</li>
+          <li>自主神經病變：姿勢性低血壓、胃輕癱、無症狀低血糖。</li>
+        </ul>
+        <h3>大血管病變</h3>
+        <ul>
+          <li>冠心病風險為一般人 2–4 倍；周邊動脈疾病以 <b>ABI（踝肱指數）</b>評估，間歇性跛行。</li>
+          <li>控制三高、戒菸、抗血小板治療。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑮ 共病管理：高血壓 / 血脂</summary><div class="body">
+        <ul>
+          <li><b>血壓目標 &lt; 130/80 mmHg</b>；首選 <b>ACEI／ARB</b>（尤其合併蛋白尿）。</li>
+          <li>血脂目標：<b>LDL &lt; 100</b>（高危險 &lt;70）、HDL 男 &gt;40／女 &gt;50、TG &lt;150。</li>
+          <li>降血脂首選 <b>statin（HMG-CoA 還原酶抑制劑）</b>；TG 極高（&gt;500）防胰臟炎可用 fibrate。</li>
+          <li>建議地中海飲食、減鈉、規律運動、戒菸併行。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑯ 特殊族群：懷孕 / 老年 / 兒童 / 手術</summary><div class="body">
+        <h3>妊娠糖尿病 GDM</h3>
+        <ul>
+          <li>篩檢時機：<b>懷孕 24–28 週</b>。兩步驟：50 克篩檢 1 小時 ≥ 140 → 再做 100 克 3 小時 OGTT。</li>
+          <li>100 克 OGTT 切點（Carpenter-Coustan）：空腹 95／1hr 180／2hr 155／3hr 140，<b>≥ 2 項</b>異常即診斷。</li>
+          <li>孕期血糖控制<b>首選胰島素</b>（多數口服藥不建議）；產後 6–12 週重新分類。</li>
+        </ul>
+        <h3>老年</h3>
+        <ul>
+          <li>目標<b>放寬</b>（HbA1c 7.5–8.5%視健康狀況），首重<b>避免低血糖</b>；慎用長效 SU。</li>
+        </ul>
+        <h3>兒童／青少年</h3>
+        <ul>
+          <li>以<b>第 1 型</b>為主；初期可有「<b>蜜月期</b>」胰島素需求暫降（≤0.5 U/kg）。</li>
+        </ul>
+        <h3>手術期</h3>
+        <ul>
+          <li>圍術期目標血糖約 140–180（避免 &gt;200 及低血糖）；可用 GKI 或靜脈胰島素控制。</li>
+        </ul>
+      </div></details>
+
+      <details class="acc"><summary>⑰ 衛教 / 個案管理 / 照護團隊</summary><div class="body">
+        <ul>
+          <li><b>糖尿病共同照護網</b>：以個案管理師（衛教師）為核心，結合醫師、護理、營養、藥師等<b>跨專業團隊</b>，提供持續性整合照護。</li>
+          <li>糖尿病衛教五大核心：飲食、運動、藥物、監測、併發症預防（自我照顧足部）。</li>
+          <li><b>糖尿病護照／登錄</b>：記錄檢驗值與追蹤，落實定期回診與品質指標（HbA1c、眼底、腎功能、足檢）。</li>
+          <li>生活品質評估工具：WHOQOL、SF-36、DQOL。</li>
+          <li>足部自我照護衛教：每日檢查、勿赤腳、溫水洗腳、修平趾甲、合腳鞋襪、勿自行處理雞眼。</li>
+        </ul>
+      </div></details>
+
+      <p class="muted" style="font-size:12px;margin-top:14px">※ 本教材重點由考古題內容及考試簡章參考書目（國健署、糖尿病學會、衛教學會指引）彙整，僅供準備參考，臨床請以最新指引與藥品仿單為準。</p>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section id="tab-quiz" class="hide">
+    <div class="card" id="quizSetup">
+      <div class="row" style="justify-content:space-between">
+        <div class="row">
+          <label class="muted">主題</label>
+          <select id="topicSel"></select>
+        </div>
+        <div class="row">
+          <label class="muted"><input type="checkbox" id="shuffleChk" checked> 隨機抽題</label>
+          <label class="muted"><input type="checkbox" id="hideWarn"> 排除⚠待查證</label>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="startBtn">開始練習</button>
+        <span class="muted" id="setupInfo"></span>
+      </div>
+    </div>
+
+    <div class="card hide" id="quizArea">
+      <div class="progress"><i id="bar"></i></div>
+      <div class="qmeta">
+        <span id="qpos"></span>
+        <span class="stat"><span>✔ <b id="sRight" style="display:inline;color:var(--green)">0</b></span><span>✘ <b id="sWrong" style="display:inline;color:var(--red)">0</b></span></span>
+      </div>
+      <div><span class="pill topic" id="qTopic"></span><span class="pill" id="qId"></span><span class="pill warn hide" id="qWarn">⚠ 答案待查證</span></div>
+      <div class="qstem" id="qStem"></div>
+      <div id="qOpts"></div>
+      <div class="explain" id="qExplain"></div>
+      <div class="nav">
+        <button class="btn ghost sm" id="prevBtn">‹ 上一題</button>
+        <button class="btn ghost sm" id="endBtn">結束</button>
+        <button class="btn sm" id="nextBtn">下一題 ›</button>
+      </div>
+    </div>
+
+    <div class="card hide" id="resultArea">
+      <h2 style="margin-top:0">本回合結果</h2>
+      <div class="stat" style="font-size:16px">
+        <span>答對 <b id="rRight" style="color:var(--green)">0</b></span>
+        <span>答錯 <b id="rWrong" style="color:var(--red)">0</b></span>
+        <span>正確率 <b id="rRate" style="color:var(--accent2)">0%</b></span>
+      </div>
+      <div class="row" style="margin-top:16px">
+        <button class="btn" id="againBtn">再來一回</button>
+        <button class="btn ghost" id="reviewWrongBtn">複習本回錯題</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WRONG ===================== -->
+  <section id="tab-wrong" class="hide">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div><b>錯題本</b> <span class="muted">（瀏覽器自動記錄，共 <span id="wrongCount">0</span> 題）</span></div>
+        <div class="row">
+          <button class="btn sm" id="practiceWrongBtn">練習錯題</button>
+          <button class="btn ghost sm" id="clearWrongBtn">清空</button>
+        </div>
+      </div>
+      <div id="wrongList" style="margin-top:12px"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== 題庫資料 ===================== */
+/* answer: 正確選項字母；warn:true 表示答案信心較低、建議查證 */
+const QUESTIONS = [
+/* ---- 口服降血糖藥 ---- */
+{id:"n502",topic:"口服降血糖藥",q:"下列哪一種治療糖尿病的藥物，若個別服用會有導致低血糖的危險？",options:{A:"Repaglinide",B:"Thiazolidinediones",C:"Metformin",D:"Sitagliptin"},answer:"A",explain:"Repaglinide（meglitinide 類）為促胰島素分泌劑，單獨使用即可能低血糖；TZD、Metformin、DPP-4i 單用風險低。"},
+{id:"n213",topic:"口服降血糖藥",q:"使用 pioglitazone 之影響，何者有誤？",options:{A:"體重增加",B:"血紅素濃度上升",C:"水腫",D:"高密度脂蛋白膽固醇上升"},answer:"B",explain:"TZD 會體重增加、水腫、血容比/血紅素下降（稀釋），故「血紅素上升」錯誤。",warn:true},
+{id:"n496",topic:"口服降血糖藥",q:"下列何種口服降血糖藥物會造成體重增加？",options:{A:"GLIMEPIRIDE",B:"PIOGLITAZONE",C:"SITAGLIPTIN",D:"METFORMIN"},answer:"B",explain:"TZD（pioglitazone）最易造成體重增加與水腫。"},
+{id:"727",topic:"口服降血糖藥",q:"下列關於胰島素增敏劑（insulin sensitizers）的敘述，何者錯誤？",options:{A:"通常為平緩、長期的血糖控制",B:"相較磺醯尿素類可維持較長期間血糖穩定",C:"對肝功能影響很大",D:"可降低胰島素阻抗"},answer:"C",explain:"新一代 TZD（pioglitazone）肝毒性低，非對肝功能影響很大。"},
+{id:"630",topic:"口服降血糖藥",q:"若生活型態改善無效，可用藥物協助預防糖尿病，下列哪一種尚無研究證實？",options:{A:"Acarbose",B:"Orlistat",C:"Metformin",D:"Pioglitazone"},answer:"D",explain:"Acarbose、Orlistat、Metformin 皆有預防糖尿病實證；Pioglitazone 實證較不足。",warn:true},
+{id:"572",topic:"口服降血糖藥",q:"下列何口服抗糖尿病藥藉由 PPARγ 的作用？",options:{A:"α-Glucosidase inhibitors",B:"Repaglinide",C:"Sulphonylurea",D:"Pioglitazone"},answer:"D",explain:"TZD（pioglitazone）作用於 PPARγ 受體增加胰島素敏感性。"},
+{id:"n29",topic:"口服降血糖藥",q:"以下何者最容易發生低血糖？",options:{A:"DPP-4 inhibitors",B:"TZD",C:"SGLT2 inhibitors",D:"Insulin"},answer:"D",explain:"選項中只有 Insulin 容易低血糖。"},
+{id:"315",topic:"口服降血糖藥",q:"磺醯尿素類和下列何者不宜合併使用？",options:{A:"glinide 類（meglitinide）",B:"雙胍類 Metformin",C:"α-glucosidase inhibitor",D:"胰島素增敏劑"},answer:"A",explain:"SU 與 glinide 同為促胰島素分泌劑、機轉相同，併用無加成且增加低血糖風險。"},
+{id:"624",topic:"口服降血糖藥",q:"下列口服抗糖尿病藥，何者較不能降低餐後血糖？",options:{A:"α-Glucosidase inhibitors",B:"Repaglinide",C:"Nateglinide",D:"Metformin"},answer:"D",explain:"Metformin 主要降空腹/肝糖輸出，對餐後較弱；acarbose 與 glinide 專降餐後。"},
+{id:"n28",topic:"口服降血糖藥",q:"以下何者是第 2 型糖尿病的第一線用藥？",options:{A:"Pioglitazone",B:"Acarbose",C:"Glimepiride",D:"Metformin"},answer:"D",explain:"Metformin 為第 2 型糖尿病首選第一線用藥。"},
+{id:"556",topic:"口服降血糖藥",q:"有關 metformin 的敘述，何者正確？",options:{A:"主要在小腸減少葡萄糖吸收",B:"可降低三酸甘油酯",C:"主要由肝臟代謝",D:"會降低維生素 B1 濃度"},answer:"B",explain:"Metformin 改善血脂；主要抑制肝糖新生（非小腸）、不經肝代謝、影響的是 B12 非 B1。"},
+{id:"236",topic:"口服降血糖藥",q:"下列何者是 Metformin 主要的藥理機轉？",options:{A:"抑制脂肪分解",B:"抑制肝臟葡萄糖產生",C:"降低葡萄糖吸收",D:"增加胰島素分泌"},answer:"B",explain:"Metformin 主要抑制肝臟糖質新生。"},
+{id:"706",topic:"口服降血糖藥",q:"對雙胍類（metformin）敘述何者正確？",options:{A:"容易造成乳酸中毒，不適合第一線",B:"容易造成腹瀉、不適合使用",C:"UKPDS 顯示對心血管併發症有益處",D:"不適合搭配 α-glucosidase inhibitor"},answer:"C",explain:"UKPDS 顯示 metformin 對過重第 2 型糖尿病人降低心血管併發症與死亡率。"},
+{id:"275",topic:"口服降血糖藥",q:"下列何者降血糖藥物較不會增加體重？",options:{A:"胰島素",B:"Metformin",C:"磺醯尿素類",D:"胰島素增敏劑"},answer:"B",explain:"Metformin 體重中性甚至略減；胰島素、SU、TZD 皆增重。"},
+{id:"590",topic:"口服降血糖藥",q:"下列何者抗糖尿病藥會增加體重？(1)Metformin (2)Sulfonylurea (3)GLP-1 (4)Acarbose (5)Insulin",options:{A:"(1),(3),(4)",B:"(2),(3),(4)",C:"(2),(5)",D:"(1),(5)"},answer:"C",explain:"增重者為 Sulfonylurea(2) 與 Insulin(5)。"},
+{id:"n512",topic:"口服降血糖藥",q:"以下哪一類降糖藥，證實對心血管風險並不具正面的減少？",options:{A:"GLP-1 RA",B:"SGLT-2i",C:"Metformin",D:"DPP-4"},answer:"D",explain:"DPP-4i 對心血管為中性；GLP-1 RA、SGLT-2i 有保護。"},
+{id:"606",topic:"口服降血糖藥",q:"下列關於 DPP-4 inhibitor 藥物敘述，何者錯誤？",options:{A:"提高活性腸泌素濃度促進胰島素釋出",B:"通常為單獨使用",C:"可能發生急性胰臟炎",D:"腎功能不全者需調整劑量"},answer:"B",explain:"DPP-4i 常與 Metformin 等併用，非通常單獨使用。"},
+{id:"696",topic:"口服降血糖藥",q:"原服 Glibenclamide 血糖控制不佳，加上 Metformin 與 Acarbose，下列衛教何者正確？",options:{A:"若腹瀉將 Acarbose 減量",B:"若腹瀉將 Metformin 減量",C:"兩者皆與食物併服",D:"Metformin 飯前、Acarbose 飯後"},answer:"B",explain:"Metformin 常見腹瀉等腸胃不適，腹瀉時應減量；Acarbose 隨第一口飯嚼碎併服。"},
+{id:"125",topic:"口服降血糖藥",q:"有關糖尿病的敘述，下列何者不正確？",options:{A:"肝腎不全者雙胍類較易乳酸中毒",B:"Metformin/TZD 組合低血糖風險比磺醯尿素類高",C:"Sulfonylurea 類較易低血糖",D:"酒精會直接導致低血糖"},answer:"B",explain:"Metformin、TZD 不刺激胰島素分泌，低血糖風險不會比 SU 高。"},
+{id:"n260",topic:"口服降血糖藥",q:"下列哪些口服藥單用較不易低血糖？(1)gliclazide (2)metformin (3)acarbose (4)rosiglitazone (5)repaglinide (6)glimepiride",options:{A:"(2)(3)(6)",B:"(2)(3)(4)",C:"(2)(3)(5)",D:"(1)(5)(6)"},answer:"B",explain:"Metformin、Acarbose、Rosiglitazone 非促泌劑；gliclazide/glimepiride(SU)、repaglinide 會低血糖。"},
+{id:"655",topic:"口服降血糖藥",q:"下列哪些口服藥單用不易低血糖？(1)glimepiride (2)nateglinide (3)gliclazide (4)pioglitazone (5)acarbose (6)metformin",options:{A:"(2)(4)(5)",B:"(2)(3)(5)",C:"(1)(2)(3)",D:"(4)(5)(6)"},answer:"D",explain:"Pioglitazone、Acarbose、Metformin 非促泌劑；其餘為 SU/meglitinide 會低血糖。"},
+{id:"233",topic:"口服降血糖藥",q:"下列哪些口服藥會造成體重增加？(1)glimepiride (2)repaglinide (3)glipizide (4)rosiglitazone (5)acarbose (6)metformin (7)orlistat",options:{A:"(1)(2)(3)(5)",B:"(1)(3)(4)(7)",C:"(1)(3)(6)(7)",D:"(1)(2)(3)(4)"},answer:"D",explain:"SU(glimepiride,glipizide)、meglitinide(repaglinide)、TZD(rosiglitazone)增重；acarbose/metformin/orlistat 否。"},
+{id:"536",topic:"口服降血糖藥",q:"下列哪一群藥會使糖尿病人體重增加？",options:{A:"磺醯尿素類＋α-葡萄糖苷酶抑制劑",B:"磺醯尿素類＋胰島素增敏劑＋胰島素",C:"α-葡萄糖苷酶抑制劑＋胰島素增敏劑＋胰島素",D:"α-葡萄糖苷酶抑制劑＋雙胍類＋胰島素增敏劑"},answer:"B",explain:"SU、TZD、胰島素皆增重；α-glucosidase inhibitor 與 biguanide 不增重。"},
+{id:"n252",topic:"口服降血糖藥",q:"以下有關 Incretin 之敘述，何者不正確？",options:{A:"GLP-1 由腸道 L cell 分泌",B:"GLP-1 RA 主要以 eGFR<60 即需調量為限制",C:"GLP-1 刺激胰島素、抑制升糖素分泌",D:"GLP-1 類藥物可減輕體重"},answer:"B",explain:"GLP-1 RA 主要經酵素代謝，非以腎絲球過濾率為主要限制。",warn:true},
+{id:"n585",topic:"口服降血糖藥",q:"DPP-4 inhibitor 和 GLP-1 RA 的差異，何者不正確？",options:{A:"DPP-4i 以口服劑型為主",B:"兩者皆能有效降低體重",C:"GLP-1 RA 對食慾影響較大",D:"DPP-4i 幾乎不影響胃排空"},answer:"B",explain:"GLP-1 RA 可明顯減重，DPP-4i 為體重中性，非「兩者皆能減重」。"},
+{id:"148",topic:"口服降血糖藥",q:"下列有關 Incretin hormones 之敘述，何者錯誤？",options:{A:"並非所有病人 GLP-1 都不足",B:"DPP-IV 抑制劑可使 GLP-1/GIP 作用增加",C:"第 2 型病患 DPP-IV 活性可能增加",D:"DPP-IV 抑制劑需以注射途徑作用"},answer:"D",explain:"DPP-4 抑制劑（如 sitagliptin）為口服藥，非注射劑型。"},
+{id:"n632",topic:"口服降血糖藥",q:"穀類可藉由下列何種物質抑制 glucagon 分泌、減少肝糖新生？",options:{A:"GLP-1",B:"DPP-4",C:"SGLT-2",D:"GLUT-1"},answer:"A",explain:"腸泌素 GLP-1 抑制升糖素分泌，減少肝糖新生。"},
+{id:"229",topic:"口服降血糖藥",q:"有關糖尿病藥物治療，下列配對何者為非？",options:{A:"磺醯尿素類—價格便宜",B:"胰島素—作用快速",C:"胰島素增敏劑(TZD)—不易低血糖",D:"α-glucosidase 抑制劑—大幅降低體重"},answer:"D",explain:"α-glucosidase 抑制劑對體重中性，不會大幅降低體重。"},
+{id:"237",topic:"口服降血糖藥",q:"用 Metformin＋α-glucosidase inhibitor，清晨運動前血糖 98mg/dL，如何處理？",options:{A:"補充碳水化合物後再運動",B:"不需特別補充碳水化合物",C:"延長運動時間",D:"停止運動"},answer:"B",explain:"此二藥單用不易低血糖，98 屬正常，不需特別補充。"},
+{id:"n500",topic:"口服降血糖藥",q:"用 Metformin＋α-glucosidase inhibitor，清晨運動後血糖 98mg/dL，何者正確？",options:{A:"補充碳水化合物後再運動",B:"不需特別補充碳水化合物",C:"縮短運動時間",D:"延長運動時間"},answer:"B",explain:"此二藥單用不易低血糖，98 屬正常，不需特別補充。"},
+{id:"643",topic:"口服降血糖藥",q:"服用 α-glucosidase inhibitors 發生低血糖時，可飲用何者改善？",options:{A:"飯",B:"蜂蜜",C:"牛奶",D:"以上皆可"},answer:"B",explain:"此藥延緩雙醣/多醣分解，低血糖須補單醣，蜂蜜含葡萄糖/果糖可直接吸收。"},
+{id:"n214",topic:"口服降血糖藥",q:"α-glucosidase inhibitors 抑制 starch、maltose、sucrose 分解為？",options:{A:"Disaccharides",B:"Oligosaccharides",C:"Monosaccharides",D:"Polysaccharides"},answer:"C",explain:"抑制雙醣/寡醣分解為單醣(monosaccharides)，延緩葡萄糖吸收。"},
+{id:"705",topic:"口服降血糖藥",q:"下列何者抗糖尿病藥物改善 HbA1c 的能力最好？",options:{A:"Sulfonylurea",B:"Thiazolidinedione",C:"Acarbose",D:"Insulin"},answer:"D",explain:"胰島素無劑量上限，降 A1C 能力最強。"},
+
+/* ---- 胰島素 ---- */
+{id:"629",topic:"胰島素",q:"CSII 幫浦內最適宜使用之胰島素為？",options:{A:"insulin glargine",B:"insulin detemir",C:"ultralente",D:"insulin aspart"},answer:"D",explain:"幫浦須使用速效胰島素（aspart），長效基礎胰島素不可用於幫浦。"},
+{id:"392",topic:"胰島素",q:"接受多次注射者，餐前注射何種胰島素最適宜控制餐後血糖？",options:{A:"NPH insulin",B:"regular insulin",C:"insulin glargine",D:"insulin aspart"},answer:"D",explain:"餐前控餐後宜用速效 aspart，起效快、對應餐後高峰。"},
+{id:"338",topic:"胰島素",q:"關於胰島素治療計畫，下列何者錯誤？",options:{A:"進食後分泌稱 bolus、對抗餐後分泌稱 basal（定義對調）",B:"一天一次基礎胰島素即可模仿生理含高峰與低谷的分泌",C:"最佳控制需餐前注射加睡前的大量胰島素",D:"DCCT 顯示積極治療優於一天兩次傳統治療"},answer:"B",explain:"一天一次基礎胰島素只提供平穩濃度，無法模仿含高峰/低谷的生理分泌。",warn:true},
+{id:"n410",topic:"胰島素",q:"有關積極胰島素治療法的敘述，下列何者正確？",options:{A:"每日多次注射或胰島素幫浦",B:"幫浦使用長效胰島素",C:"一天一次注射即可",D:"僅限第 2 型使用"},answer:"A",explain:"積極治療＝每日多次（基礎-餐時）注射或幫浦，使用速效/短效胰島素。"},
+{id:"n266",topic:"胰島素",q:"糖尿病女性懷孕第二、三期，胰島素需求何者正確？",options:{A:"需求減少，約 0.9-1.2 u/kg/d",B:"需求增加，約 0.9-1.2 u/kg/d",C:"需求減少，約 0.4-0.6 u/kg/d",D:"需求增加，約 0.4-0.6 u/kg/d"},answer:"B",explain:"妊娠中後期胎盤荷爾蒙→胰島素阻抗上升，需求增加約 0.9-1.2 u/kg/d。"},
+{id:"584",topic:"胰島素",q:"懷孕中後期胰島素需求約為孕前二倍，大約多少 u/kg/天？",options:{A:"1.2-1.8",B:"1.8-2.0",C:"0.6-0.8",D:"0.9-1.2"},answer:"B",explain:"孕前約 0.9-1.0，後期增至約二倍 → 1.8-2.0 u/kg/d。",warn:true},
+{id:"n237",topic:"胰島素",q:"下列何種胰島素沒有所謂的藥物高峰期？",options:{A:"Lispro",B:"Regular",C:"NPH",D:"Glargine"},answer:"D",explain:"Glargine 為長效、平穩無明顯高峰。"},
+{id:"679",topic:"胰島素",q:"有關長效胰島素 glargine 的敘述，下列何者錯誤？",options:{A:"全程作用約 24 小時",B:"作用高峰約 4-8 小時",C:"不適合與其他胰島素混合",D:"PH 接近 4，不建議靜脈注射"},answer:"B",explain:"Glargine 無明顯高峰，「高峰 4-8 小時」錯誤。"},
+{id:"n32",topic:"胰島素",q:"下列胰島素敘述何者錯誤？",options:{A:"Glargine 須每天固定同一時間注射（題述為可不固定）",B:"Ryzodeg 飯前注射、使用前不需搖勻",C:"NPH 為中效，作用開始 2-4 小時",D:"速效胰島素飯前注射，作用較 RI 快"},answer:"A",explain:"Glargine 應每天固定同一時間注射以維持穩定濃度。"},
+{id:"45",topic:"胰島素",q:"下列何者為長效型且外觀澄清的胰島素？",options:{A:"Regular insulin",B:"Insulin aspart",C:"Insulin glargine",D:"NPH"},answer:"C",explain:"Glargine 澄清、長效；NPH 混濁中效，Regular/aspart 短/速效。"},
+{id:"n264",topic:"胰島素",q:"有關 insulin glargine 的描述，何者有誤？",options:{A:"外觀呈混濁狀",B:"開封後 4 週應丟棄",C:"平常一天注射一次",D:"不宜與 regular insulin 混合"},answer:"A",explain:"Glargine 為澄清液，非混濁。"},
+{id:"225",topic:"胰島素",q:"下列何者不是作為基礎胰島素(basal insulin)的作用？",options:{A:"Regular insulin",B:"Insulin glargine",C:"NPH",D:"Insulin detemir"},answer:"A",explain:"Regular 為短效餐時胰島素，非基礎。"},
+{id:"n494",topic:"胰島素",q:"下列何者不可作為基礎胰島素使用？",options:{A:"Insulin aspart",B:"Insulin glargine",C:"Insulin degludec",D:"Insulin detemir"},answer:"A",explain:"Aspart 為速效餐時胰島素，不能作基礎。"},
+{id:"n540",topic:"胰島素",q:"有關新一代胰島素敘述，何者為對？",options:{A:"長效基礎胰島素比 NPH 更平穩持久",B:"Tresiba 形成六聚體以加快進入循環",C:"Ryzodeg 須搖勻混合才能使用",D:"生物相似藥與原廠完全相同"},answer:"A",explain:"Degludec 等長效基礎胰島素藥動藥效較 NPH 平穩持久；六聚體是延緩吸收、Ryzodeg 澄清不需搖勻。",warn:true},
+{id:"615",topic:"胰島素",q:"Insulin lispro 與 regular insulin 之比較，下列何者錯誤？",options:{A:"lispro 可於注射後即進食",B:"lispro 需餐前 30-60 分注射且易餐前低血糖",C:"lispro 較不易夜間低血糖",D:"lispro 對 A1C 較 regular 低"},answer:"B",explain:"需餐前 30-60 分、易餐前低血糖的是 regular insulin；速效 lispro 可即時注射。"},
+{id:"n600",topic:"胰島素",q:"關於 insulin degludec 的藥效特性，下列敘述何者正確？",options:{A:"半衰期約 25 小時且有明顯高峰",B:"非基礎胰島素",C:"皮下注射後形成可溶多六聚體、末端緩慢解離平穩降糖",D:"作用僅 12 小時"},answer:"C",explain:"Degludec 皮下形成可溶多六聚體儲庫，末端緩慢解離達超長效平穩降糖。"},
+{id:"n457",topic:"胰島素",q:"超長效 Degludec 用於兒童青少年第 1 型，下列敘述何者錯誤？",options:{A:"半衰期約 25 小時、作用超過 42 小時",B:"降糖穩定、低血糖波動小",C:"可抑制食慾達到體重控制",D:"可一天一次注射"},answer:"C",explain:"Degludec 為基礎胰島素，無抑制食慾/減重作用（那是 GLP-1 RA）。"},
+{id:"n539",topic:"胰島素",q:"基礎胰島素的新發展，何者為非？",options:{A:"與 NPH 相比可改善飯前血糖、降低低血糖風險",B:"濃縮類似物提供持續降糖且不增低血糖",C:"長效＋GLP-1 RA 比加隨餐胰島素降更多血糖、體重更佳",D:"Ryzodeg 較預混血糖更差、低血糖更多"},answer:"D",explain:"Ryzodeg 相較預混胰島素應為控制相當或更佳、低血糖更少，「更差/更多」為非。",warn:true},
+{id:"307",topic:"胰島素",q:"下列關於胰島素幫浦的敘述，何者錯誤？",options:{A:"不需長效胰島素，裝速效胰島素即可",B:"可用醣類計算推算餐前劑量",C:"基礎胰島素調控較精準、減少低血糖",D:"幫浦可離身達 4 小時不影響血糖"},answer:"D",explain:"幫浦僅輸速效胰島素無長效儲庫，離身過久即可能高血糖甚至 DKA。"},
+{id:"n201",topic:"胰島素",q:"關於使用胰島素幫浦(CSII)病人的敘述，下列何者不正確？",options:{A:"需配合自我血糖監測(SMBG)",B:"血糖控制一定比非幫浦治療佳",C:"可依生活作息彈性調整劑量",D:"需接受醣類計算衛教"},answer:"B",explain:"幫浦不保證一定優於多次注射，成效取決於配合度與衛教。"},
+
+/* ---- 胰島素注射 ---- */
+{id:"707",topic:"胰島素注射",q:"使用 CSII 治療第 1 型糖尿病人的敘述，下列何者正確？",options:{A:"生活品質較差",B:"較傳統注射易高血糖",C:"不易發生注射部位脂肪增生",D:"胰島素給予方式較彈性"},answer:"D",explain:"CSII 可彈性給予基礎與餐前追加劑量，較傳統多次注射更具彈性。"},
+{id:"641",topic:"胰島素注射",q:"三餐前打 Insulin Aspart，晚餐每單位涵蓋 8.8 公克醣，晚餐吃 70 公克醣，需注射幾單位？",options:{A:"4 單位",B:"6 單位",C:"8 單位",D:"10 單位"},answer:"C",explain:"70 ÷ 8.8 ≈ 7.95，約 8 單位。"},
+{id:"n476",topic:"胰島素注射",q:"李先生晚餐每單位涵蓋 8.8 公克醣，晚餐吃 70 公克醣，需注射幾單位？",options:{A:"2 單位",B:"4 單位",C:"8 單位",D:"12 單位"},answer:"C",explain:"70 ÷ 8.8 ≈ 7.95，約 8 單位。"},
+{id:"n578",topic:"胰島素注射",q:"志明晚餐每單位涵蓋 8.9 公克醣，今晚計算需 8 單位，他晚餐共吃多少公克醣？",options:{A:"60 公克",B:"65 公克",C:"70 公克",D:"75 公克"},answer:"C",explain:"8.9 × 8 = 71.2 ≈ 70 公克。"},
+{id:"n265",topic:"胰島素注射",q:"使用 insulin aspart 治療，應依下列哪種血糖值調整劑量？",options:{A:"空腹血糖",B:"飯前血糖",C:"飯後 2 小時血糖",D:"2-4am 血糖"},answer:"C",explain:"Aspart 為餐時速效，主要控餐後，依飯後 2 小時血糖調整。"},
+{id:"654",topic:"胰島素注射",q:"早晚餐各打一次混合型胰島素之患者，下列建議何者正確？",options:{A:"睡前一定要吃夜點否則半夜低血糖",B:"早餐空腹偏高應調整早餐前劑量",C:"可隨進食含醣量彈性調整劑量",D:"需定時定量進食"},answer:"D",explain:"混合型胰島素固定比例、作用固定，需定時定量進食配合，無法隨餐彈性調整。",warn:true},
+{id:"n263",topic:"胰島素注射",q:"RI 與 NPH 混合抽好之注射器，最久可穩定冷藏多久？",options:{A:"一週",B:"二週",C:"四週",D:"八週"},answer:"A",explain:"RI＋NPH 預混抽好之注射器冷藏穩定以不超過一週為原則。"},
+{id:"249",topic:"胰島素注射",q:"關於青少年糖尿病患者的自我照顧，下列何者正確？",options:{A:"可鼓勵選用腹部注射部位",B:"生長快速故不用限制飲食",C:"為方便可固定同一部位施打",D:"併發症機率低不用太擔心"},answer:"A",explain:"仍須注意飲食、輪換部位、重視併發症；腹部吸收良好可建議。"},
+{id:"n225",topic:"胰島素注射",q:"以下胰島素注射部位吸收速率，何者正確？",options:{A:"腹部最快、其次上臂大腿、臀部最慢",B:"臀部最快",C:"大腿最快",D:"四處速率相同"},answer:"A",explain:"吸收：腹部 > 上臂 > 大腿 > 臀部。"},
+{id:"n227",topic:"胰島素注射",q:"以下關於胰島素注射部位的照護，何者正確？",options:{A:"每次注射前檢視觸診部位",B:"避開脂肪增生/發炎/水腫部位",C:"洗淨雙手、注射於乾淨乾燥部位",D:"以上皆是"},answer:"D",explain:"檢視觸診、避開異常部位、清潔乾燥皆為正確注射照護。"},
+{id:"n228",topic:"胰島素注射",q:"以下關於筆型注射器使用的敘述，何者不正確？",options:{A:"僅可個人使用避免交叉感染",B:"筆針針頭可多次使用",C:"注射完應立即安全丟棄針頭",D:"注射前才裝新針頭"},answer:"B",explain:"筆針應一針一換、單次使用，重複使用會鈍化並增感染/脂肪增生。"},
+{id:"n229",topic:"胰島素注射",q:"以下關於減輕注射疼痛度的敘述，何者正確？",options:{A:"回溫至室溫再注射",B:"注射前確定無氣泡",C:"等酒精揮發乾再注射",D:"以上皆是"},answer:"D",explain:"回溫、排氣泡、酒精乾後再扎針皆可減痛。"},
+
+/* ---- 糖尿病神經病變 ---- */
+{id:"685",topic:"糖尿病神經病變",q:"有關周邊神經病變的臨床症狀，下列何者正確？",options:{A:"出汗功能異常",B:"足部感覺遲鈍",C:"不自覺低血糖",D:"胃輕癱"},answer:"B",explain:"周邊感覺神經病變典型為足部麻木/感覺遲鈍；其餘為自主神經病變。"},
+{id:"n6",topic:"糖尿病神經病變",q:"糖尿病神經病變的篩檢，以下何者為非？",options:{A:"第 1 型初診斷時應立即篩檢神經病變",B:"建議至少每年篩檢一次",C:"第 2 型確診時即應篩檢",D:"有症狀的前期病患可考慮篩檢"},answer:"A",explain:"第 1 型於診斷後約 5 年才開始篩檢，第 2 型則確診當下即篩。"},
+{id:"n7",topic:"糖尿病神經病變",q:"有關糖尿病神經病變之治療原則為何？",options:{A:"保護足部避免受傷及衛教",B:"提供糖尿病衛教與支持",C:"血糖控制與危險因子處置",D:"以上皆是"},answer:"D",explain:"含血糖控制、危險因子處置、足部保護與衛教。"},
+{id:"449",topic:"糖尿病神經病變",q:"有關糖尿病神經病變，何者錯誤？",options:{A:"遠端對稱性最常見，大纖維影響觸覺/振動覺",B:"高血糖經 AGE 保護髓鞘、降低神經病變",C:"DCCT 顯示嚴格控糖可減少約 60% 發生率",D:"UKPDS 結果不完全相同"},answer:"B",explain:"AGE 會破壞髓鞘與神經、加重病變，非保護。"},
+{id:"184",topic:"糖尿病神經病變",q:"糖尿病神經病變會影響下列何者？",options:{A:"感覺神經",B:"運動神經",C:"自主神經",D:"以上皆是"},answer:"D",explain:"感覺、運動、自主神經皆可受影響。"},
+{id:"271",topic:"糖尿病神經病變",q:"有關局部單一部位神經病變(mononeuropathy)的描述，下列何者正確？",options:{A:"慢性",B:"進行性",C:"自限性(self-limited)",D:"常造成永久功能損傷"},answer:"C",explain:"單一神經病變多為急性、自限性，會自行緩解。"},
+{id:"n8",topic:"糖尿病神經病變",q:"以下關於自律神經病變的描述何者為非？",options:{A:"第 1 型 20 年 30%、第 2 型 15 年 60% 有心血管自律神經病變",B:"初期可僅見運動耐受不良、姿勢性低血壓",C:"上消化道病變表現為便秘、腹瀉與大便失禁",D:"可導致性功能障礙與膀胱功能異常"},answer:"C",explain:"便秘/腹瀉/失禁屬下消化道，上消化道為胃輕癱（胃排空延遲）。"},
+{id:"n427",topic:"糖尿病神經病變",q:"有關糖尿病近端對稱型/運動型多發性神經病變的敘述，下列何者正確？",options:{A:"這是最常見的糖尿病神經病變",B:"主要傷害運動神經",C:"感覺症狀通常起於上肢",D:"擴展與病程嚴重度無關"},answer:"B",explain:"近端運動型（糖尿病肌萎縮）主要侵犯運動神經、近端肌無力。"},
+{id:"n525",topic:"糖尿病神經病變",q:"以下何者為最常見的糖尿病神經病變？",options:{A:"遠端對稱性多發性神經病變",B:"自主神經病變",C:"單神經病變",D:"神經根病變"},answer:"A",explain:"遠端對稱性多發性神經病變最常見。"},
+
+/* ---- 糖尿病足 ---- */
+{id:"n288",topic:"糖尿病足",q:"有關壞疽的敘述，何者正確？",options:{A:"乾性壞疽不論大小皆須截肢",B:"濕性壞疽代表壞死進行或感染",C:"足潰瘍與感染完全無關",D:"潰瘍未短期癒合便成壞疽"},answer:"B",explain:"濕性壞疽伴隨感染與持續壞死；乾性未必須截肢、潰瘍成因含感染。"},
+{id:"n21",topic:"糖尿病足",q:"下列何者是造成糖尿病人足部潰瘍的最主要危險因子？",options:{A:"大面積胼胝",B:"周邊血管病變",C:"周邊神經病變",D:"下肢水腫"},answer:"C",explain:"周邊感覺神經病變導致保護性感覺喪失，是足潰瘍最主要危險因子。"},
+{id:"n445",topic:"糖尿病足",q:"有關糖尿病足部篩檢的敘述，何者錯誤？",options:{A:"可用單股尼龍纖維、半定量音叉",B:"足潰瘍多發生於有神經病變者",C:"可觸診足部動脈搏動評估血管",D:"若足部疼痛即可排除周邊血管病變"},answer:"D",explain:"周邊血管病變可因合併神經病變而無痛，無痛不能排除。"},
+{id:"n242",topic:"糖尿病足",q:"半定量音叉(Rydel-Seiffer)用來檢查足部的何種感覺？",options:{A:"冷覺",B:"壓覺",C:"振動覺",D:"熱覺"},answer:"C",explain:"Rydel-Seiffer 音叉檢測振動覺以評估周邊神經病變。"},
+{id:"494",topic:"糖尿病足",q:"以下何者不適合檢查糖尿病患者足部的觸覺？",options:{A:"針刺、棉花輕觸",B:"5.07 單股尼龍纖維",C:"128 cps 音叉",D:"512 cps 音叉"},answer:"C",explain:"128 cps 音叉測振動覺而非觸覺；觸壓覺以 10g(5.07) 尼龍纖維檢查。",warn:true},
+{id:"541",topic:"糖尿病足",q:"第 2 型糖尿病人因足部肌肉萎縮致鎚狀趾，穿此種鞋子的主要目的？",options:{A:"塑造特定形狀",B:"保護腳趾、避免異物刺激",C:"固定腳部",D:"增進下肢循環"},answer:"B",explain:"鎚狀趾易與鞋頭摩擦受傷，深鞋頭主要在保護腳趾、避免刺激。"},
+{id:"n743",topic:"糖尿病足",q:"下列何者是適當評估足部護理衛教後的行為結果？",options:{A:"每天檢查足部",B:"足部有無傷口",C:"穿著適當鞋具",D:"腳指甲修剪方式"},answer:"A",explain:"行為結果以病人是否每天自我檢查足部等具體行為評估。"},
+{id:"600",topic:"糖尿病足",q:"第 2 型糖尿病爪狀趾患者選鞋，下列何者是適當的衛教？",options:{A:"鞋底越厚越好",B:"傍晚買鞋避免不適",C:"不可穿魔鬼氈鞋",D:"穿深度加大的鞋使腳趾有活動空間"},answer:"D",explain:"爪狀趾需穿深寬足夠的鞋，提供腳趾活動空間、避免摩擦。"},
+{id:"n655",topic:"糖尿病足",q:"糖尿病足評估的 PEDIS score 不包含何者？",options:{A:"灌流 Perfusion",B:"周邊循環（重複項）",C:"感染 Infection",D:"感覺 Sensation"},answer:"B",explain:"PEDIS = Perfusion/Extent/Depth/Infection/Sensation，無「周邊循環」。",warn:true},
+{id:"n656",topic:"糖尿病足",q:"Wagner 分級共分為幾級？",options:{A:"三級",B:"四級",C:"五級",D:"六級"},answer:"D",explain:"Wagner 分 0～5 級，共六級。"},
+{id:"n682",topic:"糖尿病足",q:"下列何者非糖尿病足導致截肢的主要因子？",options:{A:"高血壓",B:"足部潰瘍",C:"周邊血管疾病",D:"神經病變"},answer:"A",explain:"潰瘍、周邊血管疾病、神經病變為主要因子；高血壓為間接因子。"},
+{id:"n683",topic:"糖尿病足",q:"下列何者非足部血液循環不佳之抗血小板藥物？",options:{A:"Rivaroxaban",B:"Clopidogrel",C:"Cilostazol",D:"Ticagrelor"},answer:"A",explain:"Rivaroxaban 是 Factor Xa 抑制劑（抗凝血），非抗血小板。"},
+{id:"n697",topic:"糖尿病足",q:"促進乾淨傷口癒合的方法何者為非？",options:{A:"使用優碘消毒",B:"使用負壓真空吸引裝置",C:"保持傷口在生長因子環境",D:"使用適當敷料"},answer:"A",explain:"優碘對肉芽組織有細胞毒性、會延遲乾淨傷口癒合。"},
+{id:"n699",topic:"糖尿病足",q:"糖尿病足傷口癒合後的復健治療何者正確？",options:{A:"癒合前鼓勵避免運動",B:"選軟鞋墊軟鞋底",C:"長期臥床先做肌耐力再有氧",D:"用輔具減壓、避免局部過度承重壓迫皮膚"},answer:"D",explain:"癒合後以輔具減壓、避免局部承重壓迫以防再潰瘍。"},
+{id:"497",topic:"糖尿病足",q:"篩檢周邊動脈硬化性血管疾病，下列何者非應強調之症狀？",options:{A:"間歇性跛行",B:"肢端缺血/冰冷",C:"心絞痛",D:"下肢無力/痠麻"},answer:"C",explain:"周邊動脈疾病應問跛行、肢端缺血；心絞痛屬冠狀動脈症狀。",warn:true},
+
+/* ---- 傷口營養 ---- */
+{id:"n628",topic:"傷口營養",q:"下列營養素有助於糖尿病足傷口癒合？a.維生素A b.鐵 c.Omega-3 d.維生素B1 e.維生素C f.水分",options:{A:"a,b,c",B:"a,b,c,e",C:"b,c,e,f",D:"a,b,c,e,f"},answer:"D",explain:"維生素A、C、鐵、Omega-3 及充足水分皆促癒合；B1 非主要。",warn:true},
+{id:"n629",topic:"傷口營養",q:"哪種營養素具調節/增強免疫、減少發炎、降低糖尿病足風險？",options:{A:"維生素A",B:"維生素B1",C:"維生素B6",D:"維生素B5"},answer:"A",explain:"維生素A 抗發炎、調節免疫、促上皮修復。",warn:true},
+{id:"n630",topic:"傷口營養",q:"參與血生成、刺激皮膚再生修復，足部傷口患者每天補充多少劑量持續 12 週可改善傷口？",options:{A:"10 毫克",B:"15 毫克",C:"30 毫克",D:"50 毫克"},answer:"C",explain:"鋅約 30 毫克/天有助糖尿病足傷口癒合與代謝指標改善。",warn:true},
+{id:"n627",topic:"傷口營養",q:"下列營養素何者可促進血管擴張、增加灌流、促進傷口癒合？",options:{A:"精胺酸",B:"色胺酸",C:"離胺酸",D:"苯丙胺酸"},answer:"A",explain:"精胺酸(Arginine)是一氧化氮前驅物，可擴張血管、增加灌流、促癒合。"},
+{id:"n626",topic:"傷口營養",q:"關於糖尿病足傷口的營養素攝取，下列何者錯誤？",options:{A:"未達總能量需求時仍只補蛋白質即可增加癒合",B:"壓瘡最低熱量建議約每日 30-35 大卡/公斤",C:"適量水分維持皮膚飽和度及血流",D:"蛋白質有助傷口修復"},answer:"A",explain:"應優先滿足總能量需求再補蛋白質，順序概念有誤。",warn:true}
+];
+
+/* ===================== 狀態 ===================== */
+const LS_WRONG='dm_wrong_v1';
+let session=[],idx=0,answered={},rightN=0,wrongN=0,lastWrongIds=[];
+
+function getWrong(){try{return JSON.parse(localStorage.getItem(LS_WRONG))||[]}catch(e){return[]}}
+function setWrong(a){localStorage.setItem(LS_WRONG,JSON.stringify([...new Set(a)]))}
+function addWrong(id){const w=getWrong();if(!w.includes(id)){w.push(id);setWrong(w)}}
+function removeWrong(id){setWrong(getWrong().filter(x=>x!==id))}
+function byId(id){return QUESTIONS.find(q=>q.id===id)}
+
+/* ===================== Tab 切換 ===================== */
+const tabs=document.querySelectorAll('.tab');
+const sections={notes:document.getElementById('tab-notes'),quiz:document.getElementById('tab-quiz'),wrong:document.getElementById('tab-wrong')};
+tabs.forEach(t=>t.onclick=()=>{
+  tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');
+  Object.values(sections).forEach(s=>s.classList.add('hide'));
+  sections[t.dataset.tab].classList.remove('hide');
+  if(t.dataset.tab==='wrong')renderWrong();
+});
+
+/* ===================== 初始化 ===================== */
+document.getElementById('qcount').textContent=QUESTIONS.length;
+(function initTopics(){
+  const topics=[...new Set(QUESTIONS.map(q=>q.topic))];
+  const sel=document.getElementById('topicSel');
+  sel.innerHTML='<option value="__all">全部主題 ('+QUESTIONS.length+')</option>'+
+    topics.map(t=>`<option value="${t}">${t} (${QUESTIONS.filter(q=>q.topic===t).length})</option>`).join('');
+  updateSetupInfo();
+  sel.onchange=updateSetupInfo;
+  document.getElementById('hideWarn').onchange=updateSetupInfo;
+})();
+function poolFromSetup(){
+  const t=document.getElementById('topicSel').value;
+  const hw=document.getElementById('hideWarn').checked;
+  let pool=QUESTIONS.filter(q=>t==='__all'||q.topic===t);
+  if(hw)pool=pool.filter(q=>!q.warn);
+  return pool;
+}
+function updateSetupInfo(){document.getElementById('setupInfo').textContent='本回合 '+poolFromSetup().length+' 題';}
+
+/* ===================== 測驗流程 ===================== */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startQuiz(pool){
+  session=document.getElementById('shuffleChk').checked?shuffle(pool):pool.slice();
+  if(!session.length){toast('此條件下沒有題目');return}
+  idx=0;answered={};rightN=0;wrongN=0;lastWrongIds=[];
+  document.getElementById('quizSetup').classList.add('hide');
+  document.getElementById('resultArea').classList.add('hide');
+  document.getElementById('quizArea').classList.remove('hide');
+  renderQ();
+}
+document.getElementById('startBtn').onclick=()=>startQuiz(poolFromSetup());
+
+function renderQ(){
+  const q=session[idx];
+  document.getElementById('bar').style.width=((idx)/session.length*100)+'%';
+  document.getElementById('qpos').textContent=`第 ${idx+1} / ${session.length} 題`;
+  document.getElementById('qTopic').textContent=q.topic;
+  document.getElementById('qId').textContent='#'+q.id;
+  document.getElementById('qWarn').classList.toggle('hide',!q.warn);
+  document.getElementById('qStem').textContent=q.q;
+  document.getElementById('sRight').textContent=rightN;
+  document.getElementById('sWrong').textContent=wrongN;
+  const box=document.getElementById('qOpts');box.innerHTML='';
+  const ex=document.getElementById('qExplain');ex.classList.remove('show');
+  const prev=answered[q.id];
+  Object.keys(q.options).forEach(k=>{
+    const b=document.createElement('button');
+    b.className='opt';b.innerHTML=`<span class="k">${k}</span>${q.options[k]}`;
+    if(prev){
+      b.disabled=true;
+      if(k===q.answer)b.classList.add('correct');
+      else if(k===prev.pick)b.classList.add('wrong');
+    }else{
+      b.onclick=()=>pick(q,k,box,ex);
+    }
+    box.appendChild(b);
+  });
+  if(prev)showExplain(q,ex);
+  document.getElementById('prevBtn').disabled=idx===0;
+  document.getElementById('nextBtn').textContent=idx===session.length-1?'完成 ✓':'下一題 ›';
+}
+function pick(q,k,box,ex){
+  const correct=k===q.answer;
+  answered[q.id]={pick:k,correct};
+  if(correct){rightN++;removeWrong(q.id);}else{wrongN++;addWrong(q.id);lastWrongIds.push(q.id);}
+  [...box.children].forEach(b=>{
+    b.disabled=true;
+    const kk=b.querySelector('.k').textContent;
+    if(kk===q.answer)b.classList.add('correct');
+    else if(kk===k)b.classList.add('wrong');
+  });
+  document.getElementById('sRight').textContent=rightN;
+  document.getElementById('sWrong').textContent=wrongN;
+  showExplain(q,ex);
+}
+function showExplain(q,ex){
+  const optText=q.options[q.answer]||'';
+  ex.innerHTML=`<div style="margin-bottom:8px"><b style="color:var(--green)">✓ 正確選項　${q.answer}．${optText}</b></div>`
+    +`<div><b>詳解：</b>${q.explain}</div>`
+    +(q.warn?'<br><span style="color:var(--amber)">⚠ 此題答案信心較低，建議再查證教材。</span>':'');
+  ex.classList.add('show');
+}
+document.getElementById('nextBtn').onclick=()=>{
+  if(idx<session.length-1){idx++;renderQ();}else finish();
+};
+document.getElementById('prevBtn').onclick=()=>{if(idx>0){idx--;renderQ();}};
+document.getElementById('endBtn').onclick=finish;
+function finish(){
+  document.getElementById('quizArea').classList.add('hide');
+  const done=rightN+wrongN;
+  document.getElementById('rRight').textContent=rightN;
+  document.getElementById('rWrong').textContent=wrongN;
+  document.getElementById('rRate').textContent=(done?Math.round(rightN/done*100):0)+'%';
+  document.getElementById('resultArea').classList.remove('hide');
+}
+document.getElementById('againBtn').onclick=()=>{
+  document.getElementById('resultArea').classList.add('hide');
+  document.getElementById('quizSetup').classList.remove('hide');
+};
+document.getElementById('reviewWrongBtn').onclick=()=>{
+  const pool=lastWrongIds.map(byId).filter(Boolean);
+  if(!pool.length){toast('本回合沒有錯題 🎉');return;}
+  startQuiz(pool);
+};
+
+/* ===================== 錯題本 ===================== */
+function renderWrong(){
+  const w=getWrong();
+  document.getElementById('wrongCount').textContent=w.length;
+  const list=document.getElementById('wrongList');
+  if(!w.length){list.innerHTML='<div class="empty">目前沒有錯題，作答錯誤時會自動加入這裡。</div>';return;}
+  list.innerHTML=w.map(id=>{
+    const q=byId(id);if(!q)return'';
+    return `<details class="acc"><summary><span class="pill topic">${q.topic}</span>#${q.id}　${q.q.slice(0,28)}${q.q.length>28?'…':''}</summary>
+      <div class="body">
+        <div class="qstem" style="font-size:15px">${q.q}</div>
+        ${Object.keys(q.options).map(k=>`<div class="opt ${k===q.answer?'correct':''}" style="cursor:default"><span class="k">${k}</span>${q.options[k]}</div>`).join('')}
+        <div class="explain show" style="margin-top:8px"><b>正解 ${q.answer}．</b>${q.explain}</div>
+        <button class="btn ghost sm" style="margin-top:10px" onclick="removeWrong('${q.id}');renderWrong()">移出錯題本</button>
+      </div></details>`;
+  }).join('');
+}
+document.getElementById('practiceWrongBtn').onclick=()=>{
+  const pool=getWrong().map(byId).filter(Boolean);
+  if(!pool.length){toast('沒有錯題可練習');return;}
+  tabs.forEach(x=>x.classList.remove('active'));document.querySelector('[data-tab=quiz]').classList.add('active');
+  Object.values(sections).forEach(s=>s.classList.add('hide'));sections.quiz.classList.remove('hide');
+  startQuiz(pool);
+};
+document.getElementById('clearWrongBtn').onclick=()=>{if(confirm('確定清空錯題本？')){setWrong([]);renderWrong();}};
+
+/* ===================== Toast / 鍵盤 ===================== */
+let tt;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),1800);}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('quizArea').classList.contains('hide'))return;
+  if(e.key==='ArrowRight')document.getElementById('nextBtn').click();
+  else if(e.key==='ArrowLeft')document.getElementById('prevBtn').click();
+  else if(['1','2','3','4'].includes(e.key)){
+    const q=session[idx];if(answered[q.id])return;
+    const k=Object.keys(q.options)[+e.key-1];
+    if(k)[...document.getElementById('qOpts').children][+e.key-1]?.click();
+  }
+});
+</script>
+</body>
+</html>
