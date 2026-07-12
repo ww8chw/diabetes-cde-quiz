@@ -2,7 +2,14 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="糖尿病共照">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#0f1729" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f7fc" media="(prefers-color-scheme: light)">
 <title>糖尿病共照網 — 教材重點 & 考古題練習</title>
 <style>
   :root{
@@ -11,8 +18,11 @@
     --green:#39d98a; --red:#ff6b7a; --amber:#ffc24b; --chip:#2b3a63;
   }
   *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
-    background:linear-gradient(160deg,#0f1729,#131e36);color:var(--txt);line-height:1.7;-webkit-font-smoothing:antialiased}
+    background:linear-gradient(160deg,#0f1729,#131e36);color:var(--txt);line-height:1.7;-webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;overscroll-behavior-y:none;min-height:100vh}
+  .tab,.btn,.opt,.toolbar button,.acc>summary,.qitem>summary,select,button{touch-action:manipulation;-webkit-touch-callout:none}
   header{padding:22px 18px 14px;text-align:center;border-bottom:1px solid var(--line);
     background:rgba(20,30,55,.6);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50}
   header h1{margin:0;font-size:20px;letter-spacing:.5px}
@@ -104,6 +114,40 @@
   .qitem .body{padding:2px 12px 12px}
   .qitem .opt{cursor:default}
   .qitem .opt:hover{border-color:var(--line)}
+  /* ===== iPad / iPhone 觸控與安全區優化 ===== */
+  header{padding-top:max(22px,env(safe-area-inset-top));
+    padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+  .wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));
+    padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(18px + env(safe-area-inset-bottom))}
+  /* 避免 iOS 點擊下拉時自動放大：控制元件字級 ≥16px */
+  select{font-size:16px;min-height:44px}
+  /* 觸控目標放大（Apple 建議 ≥44px） */
+  .tab{min-height:44px;display:inline-flex;align-items:center}
+  .opt{min-height:48px}
+  .btn{min-height:44px}
+  .toolbar button{min-height:36px;padding:7px 13px}
+  .acc>summary,.qitem>summary{min-height:44px;display:flex;align-items:center}
+  /* 手機直式（≤600px）：緊湊排版、放大內文 */
+  @media (max-width:600px){
+    header{padding:16px 14px 12px;padding-top:max(16px,env(safe-area-inset-top))}
+    header h1{font-size:17px;line-height:1.35}
+    header p{font-size:12px}
+    .wrap{padding:14px 12px 80px;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+    .card{padding:15px;border-radius:14px;margin:12px 0}
+    .qstem{font-size:calc(17px*var(--fs))}
+    .opt{font-size:calc(16px*var(--fs));padding:14px 14px}
+    .tab{padding:10px 15px;font-size:15px}
+    .toolbar{gap:5px}
+    .toolbar button{font-size:13px}
+    .note table{font-size:calc(13px*var(--fs));display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+    .nav .btn{flex:1}
+    .stat{gap:14px}
+  }
+  /* 平板（iPad）：加寬內容、維持舒適閱讀 */
+  @media (min-width:601px) and (max-width:1024px){
+    .wrap{max-width:720px}
+  }
 </style>
 </head>
 <body>
